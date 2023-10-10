@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using P04WeatherForecastAPI.Client.Models;
 using System;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -15,7 +16,15 @@ namespace P04WeatherForecastAPI.Client.Services
     {
         private const string base_url = "http://dataservice.accuweather.com";
         private const string autocomplete_endpoint = "locations/v1/cities/autocomplete?apikey={0}&q={1}&language{2}";
-        private const string current_conditions_endpoint = "currentconditions/v1/{0}?apikey={1}&language{2}";
+        private const string current_conditions_endpoint = "currentconditions/v1/{0}?apikey={1}&language{2}&metric=true";
+
+        private const string five_day_forecast_endpoint = "forecasts/v1/daily/5day/{0}?apikey={1}&language={2}";
+
+        private const string alarms_endpoint = "alarms/v1/1day/{0}?apikey={1}&language{2}";
+
+        private const string indices_endpoint = "indices/v1/daily/1day/{0}?apikey={1}&language{2}";
+
+        private const string history_endpoint = "currentconditions/v1/{0}/historical?apikey={1}&language{2}";
 
         // private const string api_key = "5hFl75dja3ZuKSLpXFxUzSc9vXdtnwG5";
         string api_key;
@@ -27,7 +36,7 @@ namespace P04WeatherForecastAPI.Client.Services
             var builder = new ConfigurationBuilder()
                 .AddUserSecrets<App>()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsetings.json"); 
+                .AddJsonFile("appsetings.json");
 
             var configuration = builder.Build();
             api_key = configuration["api_key"];
@@ -50,13 +59,62 @@ namespace P04WeatherForecastAPI.Client.Services
 
         public async Task<Weather> GetCurrentConditions(string cityKey)
         {
-            string uri = base_url + "/" + string.Format(current_conditions_endpoint, cityKey, api_key,language);
+            string uri = base_url + "/" + string.Format(current_conditions_endpoint, cityKey, api_key, language);
             using (HttpClient client = new HttpClient())
             {
                 var response = await client.GetAsync(uri);
                 string json = await response.Content.ReadAsStringAsync();
-                Weather[] weathers= JsonConvert.DeserializeObject<Weather[]>(json);
+                Weather[] weathers = JsonConvert.DeserializeObject<Weather[]>(json);
                 return weathers.FirstOrDefault();
+            }
+        }
+
+        public async Task<WeatherForecastResponse> GetFiveDayForecast(string cityKey)
+        {
+            string uri = base_url + "/" + string.Format(five_day_forecast_endpoint, cityKey, api_key, language);
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(uri);
+                string json = await response.Content.ReadAsStringAsync();
+                WeatherForecastResponse weatherForecastResponse = JsonConvert.DeserializeObject<WeatherForecastResponse>(json);
+                return weatherForecastResponse;
+            }
+
+        }
+
+        public async Task<AlarmResponse[]> GetAlarms(string cityKey)
+        {
+            string uri = base_url + "/" + string.Format(alarms_endpoint, cityKey, api_key, language);
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(uri);
+                var json = await response.Content.ReadAsStringAsync();
+                AlarmResponse[] alarmResponse = JsonConvert.DeserializeObject<AlarmResponse[]>(json);
+                return alarmResponse;
+
+            }
+        }
+        public async Task<IndexResponse[]> GetIndeces(string cityKey)
+        {
+            string uri = base_url + "/" + string.Format(indices_endpoint, cityKey, api_key, language);
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(uri);
+                var json = await response.Content.ReadAsStringAsync();
+                IndexResponse[] indexResponses = JsonConvert.DeserializeObject<IndexResponse[]>(json);
+                return indexResponses;
+            }
+        }
+
+        public async Task<History[]> GetHistories(string cityKey)
+        {
+            string uri = base_url + "/" + string.Format(history_endpoint, cityKey, api_key, language);
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(uri);
+                var json = await response.Content.ReadAsStringAsync();
+                History[] histories = JsonConvert.DeserializeObject<History[]>(json);
+                return histories;
             }
         }
     }
