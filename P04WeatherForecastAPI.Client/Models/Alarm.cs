@@ -1,7 +1,7 @@
 
 namespace P04WeatherForecastAPI.Client.Models
 {
-    internal class Alarm
+    public class Alarm
     {
         public string AlarmType { get; set; }
         public AlarmValue Value { get; set; }

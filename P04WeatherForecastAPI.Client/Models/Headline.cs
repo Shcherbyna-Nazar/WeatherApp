@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace P04WeatherForecastAPI.Client.Models
 {
-    internal class Headline
+    public class Headline
     {
         public DateTime? EffectiveDate { get; set; }
         public int? EffectiveEpochDate { get; set; }

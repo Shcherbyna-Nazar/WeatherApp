@@ -71,10 +71,11 @@
 
             <TextBlock Text="Enter City Name" VerticalAlignment="Center" />
             <TextBox x:Name="txtCity" Grid.Column="1" Margin="5" Text="" />
-            <Button x:Name="btnSearch" Grid.Column="2" Content="Search" Click="btnSearch_Click" />
+            <Button x:Name="btnSearch" Grid.Column="2" Content="Search"
+                Command="{Binding LoadCitiesCommand}"
+                CommandParameter="{Binding Text, ElementName=txtCity}" />
         </Grid>
 
-        <!-- Row 1: City List -->
         <!-- Row 1: City List and Index Responses -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -83,13 +84,15 @@
             </Grid.ColumnDefinitions>
 
             <!-- City List (Left Half) -->
-            <ListBox x:Name="lbData" Margin="10" DisplayMemberPath="LocalizedName"
-                SelectionChanged="lbData_SelectionChanged" Height="200" />
+            <ListBox Height="200" x:Name="lbData" ItemsSource="{Binding Cities}"
+                SelectedItem="{Binding SelectedCity}" DisplayMemberPath="LocalizedName"
+                Margin="0,10,0,0"></ListBox>
+
 
             <!-- Indices (Right Half) -->
             <ScrollViewer Grid.Column="1" Margin="10" VerticalScrollBarVisibility="Auto"
                 Height="200">
-                <ListBox x:Name="lbIndices">
+                <ListBox x:Name="lbIndices" ItemsSource="{Binding Indices}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <WrapPanel>
@@ -104,7 +107,6 @@
         </Grid>
 
         <!-- Row 2: Current Temperature Label -->
-
         <Grid Grid.Row="2" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -115,20 +117,21 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Text="City:" Grid.Column="0" VerticalAlignment="Center" />
-            <Label x:Name="lblCityName" Grid.Column="1" Margin="5,0" VerticalAlignment="Center"
+            <Label Content="{Binding SelectedCity.LocalizedName}" Grid.Column="1" Margin="5,0"
+                VerticalAlignment="Center"
                 FontWeight="Bold" />
             <TextBlock Text="Current Temperature(°C):" Grid.Column="2" Margin="10,0"
                 VerticalAlignment="Center" />
-            <Label x:Name="lblTemperatureValue" Grid.Column="3" Margin="5,0"
+            <Label Content="{Binding WeatherData.CurrentTemperature}" Grid.Column="3"
+                Margin="5,0"
                 VerticalAlignment="Center" FontWeight="Bold" />
-            <Label x:Name="lblMaxMinTemperature" Grid.Column="4" Margin="5,0"
+            <Label Content="{Binding MaxMinTemperature}" Grid.Column="4" Margin="5,0"
                 VerticalAlignment="Center" FontWeight="Bold" />
         </Grid>
 
-
         <!-- Row 3: 5-day Forecast ScrollViewer -->
         <ScrollViewer Grid.Row="3" HorizontalScrollBarVisibility="Auto">
-            <ListBox x:Name="lbFiveDayForecast" HorizontalContentAlignment="Stretch">
+            <ListBox x:Name="lbFiveDayForecast" ItemsSource="{Binding DailyForecasts}" HorizontalContentAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border BorderBrush="Black" BorderThickness="1" Margin="5">

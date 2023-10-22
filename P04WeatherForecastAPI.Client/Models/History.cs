@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace P04WeatherForecastAPI.Client.Models
 {
-    internal class History
+    public class History
     {
         public DateTime LocalObservationDateTime { get; set; }
         public int EpochTime { get; set; }

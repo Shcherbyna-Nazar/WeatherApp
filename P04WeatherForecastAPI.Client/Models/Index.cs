@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace P04WeatherForecastAPI.Client.Models
 {
-    internal class IndexResponse
+    public class IndexResponse
     {
         public string Name { get; set; }
         public int ID { get; set; }

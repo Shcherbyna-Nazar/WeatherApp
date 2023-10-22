@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace P04WeatherForecastAPI.Client.Models
 {
-    internal class Metric
+    public class Metric
     {
         public double Value { get; set; }
         public string Unit { get; set; }
